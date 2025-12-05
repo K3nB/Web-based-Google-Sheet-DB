@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Attendance Form</title>
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    
+    .container {
+      max-width: 1400px;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    h1 {
+      color: #2d3748;
+      font-weight: 700;
+      margin-bottom: 30px;
+      font-size: 2rem;
+    }
+    
+    .date-selector {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      padding: 20px 35px;
+      border-radius: 15px;
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 20px rgba(245, 87, 108, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .date-selector:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(245, 87, 108, 0.4);
+    }
+    
+    .date-selector label {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-right: 20px;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .date-selector input {
+      font-size: 1.1rem;
+      padding: 10px 18px;
+      border: 2px solid #ffffff;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #2d3748;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .date-selector input:focus {
+      outline: none;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+    }
+    
+    .table-responsive {
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      margin-bottom: 20px;
+    }
+    
+    .attendance-table {
+      margin-bottom: 0;
+      border-radius: 15px;
+      overflow: visible;
+      width: 100%;
+    }
+    
+    .attendance-table thead {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    
+    .attendance-table thead th {
+      color: #000;
+      font-weight: 600;
+      padding: 18px 12px;
+      border: none;
+      text-align: center;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+    
+    .attendance-table tbody {
+      background-color: #f7fafc;
+    }
+    
+    .attendance-table tbody tr {
+      transition: all 0.3s ease;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .attendance-table tbody tr:hover {
+      background-color: #edf2f7;
+      transform: scale(1.005);
+    }
+    
+    .attendance-table tbody td {
+      padding: 12px;
+      border: none;
+      vertical-align: middle;
+      background-color: #ffffff;
+    }
+    
+    .form-control, .form-select {
+      border: 2px solid #e2e8f0;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      background: #ffffff;
+    }
+    
+    .form-control:focus, .form-select:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      outline: none;
+    }
+    
+    .form-control:read-only {
+      background-color: #f7fafc;
+      cursor: not-allowed;
+    }
+    
+    .btn-add-row {
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      color: white;
+      border: none;
+      padding: 14px 35px;
+      font-weight: 600;
+      border-radius: 12px;
+      margin-top: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 6px 20px rgba(17, 153, 142, 0.3);
+      transition: all 0.3s ease;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+    }
+    
+    .btn-add-row:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(17, 153, 142, 0.4);
+      background: linear-gradient(135deg, #0f8578 0%, #30d068 100%);
+    }
+    
+    .btn-add-row:active {
+      transform: translateY(0);
+    }
+    
+    .btn-submit {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: white;
+      border: none;
+      padding: 16px 55px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border-radius: 12px;
+      float: right;
+      box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+      transition: all 0.3s ease;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    
+    .btn-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(79, 172, 254, 0.5);
+      background: linear-gradient(135deg, #3d96e8 0%, #00dae8 100%);
+    }
+    
+    .btn-submit:active {
+      transform: translateY(-1px);
+    }
+    
+    .btn-submit:disabled {
+      background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%);
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+    
+    .btn-remove {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+    }
+    
+    .btn-remove:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(255, 107, 107, 0.4);
+      background: linear-gradient(135deg, #ee5a6f 0%, #c92a2a 100%);
+    }
+    
+    .uniqid-cell, .date-cell {
+      font-weight: 600;
+      color: #4a5568;
+      background-color: #edf2f7;
+      font-size: 0.9rem;
+    }
+    
+    .spinner-border-sm {
+      width: 1rem;
+      height: 1rem;
+      border-width: 0.15em;
+    }
+    
+    .modal-content {
+      border-radius: 15px;
+      border: none;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+    
+    .modal-header {
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+      padding: 20px 25px;
+    }
+    
+    .modal-body {
+      padding: 25px;
+      font-size: 1.05rem;
+      color: #2d3748;
+    }
+    
+    .modal-footer {
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+      padding: 15px 25px;
+    }
+    
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
+    }
+    
+    .status {
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 25px;
+      }
+      
+      .date-selector {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .date-selector label {
+        margin-bottom: 10px;
+        margin-right: 0;
+      }
+      
+      .btn-submit {
+        float: none;
+        width: 100%;
+        margin-top: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1><i class="bi bi-calendar-check"></i> Employee Attendance</h1>
+    
+    <div class="date-selector">
+      <label for="attendanceDate"><i class="bi bi-calendar-event"></i> Date:</label>
+      <input type="date" id="attendanceDate" class="form-control d-inline-block" style="width: auto;" required>
+    </div>
+    
+    <div class="table-responsive">
+      <table class="table attendance-table">
+        <thead>
+          <tr>
+            <th style="width: 8%;">UNIQID</th>
+            <th style="width: 10%;">Date</th>
+            <th style="width: 12%;">Employee Id</th>
+            <th style="width: 18%;">Employee Name</th>
+            <th style="width: 12%;">Check-in</th>
+            <th style="width: 12%;">Check-out</th>
+            <th style="width: 15%;">Total Working Hour</th>
+            <th style="width: 8%;">Status</th>
+            <th style="width: 5%;"></th>
+          </tr>
+        </thead>
+        <tbody id="attendanceRows">
+        </tbody>
+      </table>
+    </div>
+    
+    <button type="button" class="btn btn-add-row" id="addRowBtn">
+      <i class="bi bi-plus-circle"></i> ADD NEW ROW
+    </button>
+    
+    <button type="button" class="btn btn-submit" id="submitBtn">
+      <i class="bi bi-check-circle"></i> SUBMIT
+    </button>
+    
+    <div class="clearfix"></div>
+  </div>
+  
+  <div class="modal fade" id="successModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title">
+            <i class="bi bi-check-circle-fill"></i> Success
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="successMessage">
+          Attendance submitted successfully!
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal fade" id="errorModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title">
+            <i class="bi bi-exclamation-triangle-fill"></i> Error
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="errorMessage">
+          An error occurred.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    let employeeData = {};
+    let rowCount = 0;
+    let standardHours = 8;
+    
+    document.getElementById('attendanceDate').valueAsDate = new Date();
+    
+    window.addEventListener('DOMContentLoaded', function() {
+      loadEmployeeData();
+      loadStandardHours();
+    });
+    
+    function loadEmployeeData() {
+      google.script.run
+        .withSuccessHandler(function(data) {
+          employeeData = data;
+          addAttendanceRow();
+        })
+        .withFailureHandler(function(error) {
+          showError('Failed to load employee data: ' + error.message);
+        })
+        .getEmployeeData();
+    }
+    
+    function loadStandardHours() {
+      google.script.run
+        .withSuccessHandler(function(hours) {
+          standardHours = hours;
+        })
+        .getStandardHours();
+    }
+    
+    function addAttendanceRow() {
+      rowCount++;
+      const tbody = document.getElementById('attendanceRows');
+      const row = document.createElement('tr');
+      row.id = 'row-' + rowCount;
+      
+      let employeeOptions = '<option value="">Select Employee...</option>';
+      employeeData.ids.forEach(function(id) {
+        employeeOptions += '<option value="' + id + '">' + id + '</option>';
+      });
+      
+      row.innerHTML = `
+        <td class="uniqid-cell text-center">-</td>
+        <td class="date-cell text-center">-</td>
+        <td>
+          <select class="form-select employee-id" onchange="updateEmployeeName(${rowCount})">
+            ${employeeOptions}
+          </select>
+        </td>
+        <td>
+          <input type="text" class="form-control employee-name" readonly>
+        </td>
+        <td>
+          <input type="time" class="form-control check-in" onchange="calculateWorkingHours(${rowCount})">
+        </td>
+        <td>
+          <input type="time" class="form-control check-out" onchange="calculateWorkingHours(${rowCount})">
+        </td>
+        <td>
+          <input type="text" class="form-control total-hours text-center" readonly>
+        </td>
+        <td>
+          <input type="text" class="form-control status text-center" readonly>
+        </td>
+        <td class="text-center">
+          <button type="button" class="btn btn-remove btn-sm" onclick="removeRow(${rowCount})">
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
+      `;
+      
+      tbody.appendChild(row);
+      updateUniqIdAndDate(rowCount);
+    }
+    
+    function updateEmployeeName(rowId) {
+      const row = document.getElementById('row-' + rowId);
+      const employeeId = row.querySelector('.employee-id').value;
+      const employeeName = employeeData.map[employeeId] || '';
+      row.querySelector('.employee-name').value = employeeName;
+      
+      updateUniqIdAndDate(rowId);
+      calculateWorkingHours(rowId);
+    }
+    
+    function updateUniqIdAndDate(rowId) {
+      const row = document.getElementById('row-' + rowId);
+      const date = document.getElementById('attendanceDate').value;
+      const employeeId = row.querySelector('.employee-id').value;
+      
+      if (date && employeeId) {
+        // Parse date correctly
+        const dateParts = date.split('-');
+        const year = parseInt(dateParts[0]);
+        const month = parseInt(dateParts[1]) - 1;
+        const day = parseInt(dateParts[2]);
+        const selectedDate = new Date(year, month, day);
+        
+        // Calculate date serial matching Google Sheets
+        const epoch = new Date(1899, 11, 30);
+        const dateSerial = Math.round((selectedDate - epoch) / (1000 * 60 * 60 * 24));
+        
+        // UNIQID = Date Serial * Employee ID
+        const uniqId = dateSerial * parseInt(employeeId);
+        row.querySelector('.uniqid-cell').textContent = uniqId;
+      } else {
+        row.querySelector('.uniqid-cell').textContent = '-';
+      }
+      
+      // Display date in MM/DD/YYYY format
+      if (date) {
+        const dateParts = date.split('-');
+        const displayDate = dateParts[1] + '/' + dateParts[2] + '/' + dateParts[0];
+        row.querySelector('.date-cell').textContent = displayDate;
+      } else {
+        row.querySelector('.date-cell').textContent = '-';
+      }
+    }
+
+    
+    function calculateWorkingHours(rowId) {
+      const row = document.getElementById('row-' + rowId);
+      const checkIn = row.querySelector('.check-in').value;
+      const checkOut = row.querySelector('.check-out').value;
+      
+      let totalHours = 0;
+      let status = 'A';
+      const halfDayHours = standardHours / 2;
+      
+      if (checkIn && checkOut) {
+        const inParts = checkIn.split(':');
+        const outParts = checkOut.split(':');
+        
+        const inMinutes = parseInt(inParts[0]) * 60 + parseInt(inParts[1]);
+        const outMinutes = parseInt(outParts[0]) * 60 + parseInt(outParts[1]);
+        
+        let diffMinutes = outMinutes - inMinutes;
+        if (diffMinutes < 0) diffMinutes += 24 * 60;
+        
+        totalHours = diffMinutes / 60;
+        
+        // Status logic
+        if (totalHours < 3) {
+          status = 'A'; // Absent - less than 3 hours
+        } else if (totalHours < halfDayHours) {
+          status = 'HD'; // Half Day - less than half of full day
+        } else if (totalHours >= standardHours) {
+          status = 'E'; // Extra Hours/Overtime - greater than or equal to full day
+        } else {
+          status = 'P'; // Present/Full Day - between half day and full day
+        }
+        
+        row.querySelector('.total-hours').value = totalHours.toFixed(2) + ' hrs';
+      } else if (checkIn && !checkOut) {
+        status = 'A';
+        row.querySelector('.total-hours').value = '';
+      } else {
+        row.querySelector('.total-hours').value = '';
+      }
+      
+      row.querySelector('.status').value = status;
+    }
+    
+    function removeRow(rowId) {
+      const row = document.getElementById('row-' + rowId);
+      if (row) {
+        row.remove();
+      }
+    }
+    
+    document.getElementById('attendanceDate').addEventListener('change', function() {
+      const rows = document.querySelectorAll('#attendanceRows tr');
+      rows.forEach(function(row) {
+        const rowId = row.id.split('-')[1];
+        updateUniqIdAndDate(rowId);
+      });
+    });
+    
+    document.getElementById('addRowBtn').addEventListener('click', function() {
+      addAttendanceRow();
+    });
+    
+    document.getElementById('submitBtn').addEventListener('click', function() {
+      const date = document.getElementById('attendanceDate').value;
+      
+      if (!date) {
+        showError('Please select a date.');
+        return;
+      }
+      
+      const rows = document.querySelectorAll('#attendanceRows tr');
+      const records = [];
+      
+      rows.forEach(function(row) {
+        const employeeId = row.querySelector('.employee-id').value;
+        const employeeName = row.querySelector('.employee-name').value;
+        const checkIn = row.querySelector('.check-in').value;
+        const checkOut = row.querySelector('.check-out').value;
+        
+        if (employeeId) {
+          records.push({
+            employeeId: employeeId,
+            employeeName: employeeName,
+            checkIn: checkIn,
+            checkOut: checkOut
+          });
+        }
+      });
+      
+      if (records.length === 0) {
+        showError('Please add at least one attendance record.');
+        return;
+      }
+      
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submitting...';
+      
+      const formData = {
+        date: date,
+        records: records
+      };
+      
+      google.script.run
+        .withSuccessHandler(function(response) {
+          if (response.success) {
+            showSuccess(response.message);
+            resetForm();
+          } else {
+            showError(response.message);
+          }
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="bi bi-check-circle"></i> SUBMIT';
+        })
+        .withFailureHandler(function(error) {
+          showError('Submission failed: ' + error.message);
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="bi bi-check-circle"></i> SUBMIT';
+        })
+        .submitAttendance(formData);
+    });
+    
+    function resetForm() {
+      document.getElementById('attendanceRows').innerHTML = '';
+      rowCount = 0;
+      addAttendanceRow();
+    }
+    
+    function showSuccess(message) {
+      document.getElementById('successMessage').textContent = message;
+      const modal = new bootstrap.Modal(document.getElementById('successModal'));
+      modal.show();
+    }
+    
+    function showError(message) {
+      document.getElementById('errorMessage').textContent = message;
+      const modal = new bootstrap.Modal(document.getElementById('errorModal'));
+      modal.show();
+    }
+  </script>
+</body>
+</html>
